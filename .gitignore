@@ -1,0 +1,6 @@
+venv
+.env
+
+# telethon
+*.session
+*.session-journal
