@@ -18,11 +18,19 @@ def user_str(user):
     else:
         return f'(None)'
 
-@client.on(events.ChatAction)
+
+# @client.on(events.NewMessage)
+# async def my_event_handler(event):
+#     chat = await event.get_chat()
+#     log.info(f'chat {chat}')
+
+#@client.on(events.ChatAction())
+@client.on(events.ChatAction(func=lambda e: e.user_joined))
 async def handler(event):
-    if event.user_joined:
+#    if event.user_joined:
         # log message to delete
         user = await event.get_user()
+        chat = await event.get_chat()
 
         # user joined by link inviter by user
         message = event.action_message
