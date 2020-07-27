@@ -6,6 +6,7 @@
 - Welcome messages
 - Scheduled messages
 - Anti spam
+  - Black and white spam words lists
 - Analytics: participants
 - Analytics: added
 - Analytics: left
