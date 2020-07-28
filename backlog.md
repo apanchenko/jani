@@ -2,17 +2,13 @@
 
 ## Todo
 
-- Collect and process passed message history
+- Whitelist channel->sender pairs so that channel owner can bypass spam filter
 - Welcome messages
 - Scheduled messages
 - Anti spam
   - Black and white spam words lists
-- Analytics: participants
-- Analytics: added
-- Analytics: left
 - CRM
 - Branded bots
-- Site
 
 ## Done
 
