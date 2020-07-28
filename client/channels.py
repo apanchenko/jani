@@ -1,10 +1,13 @@
 import os
 from typing import Dict, Optional
+import logging
 
 from telethon import TelegramClient
 from telethon.tl.types import PeerChannel
 from telethon.tl.functions.channels import GetFullChannelRequest
 
+log = logging.getLogger(name='channels')
+log.setLevel(level=logging.INFO)
 
 class Channels:
     _titles: Dict[int, str] = {}
@@ -16,7 +19,12 @@ class Channels:
         if id in self._titles:
             return self._titles[id]
 
-        entity = await client.get_input_entity(PeerChannel(id))
+        try:
+            entity = await client.get_input_entity(PeerChannel(id))
+        except:
+            log.exception(f'‼️ Failed get_input_entity({id})')
+            return None
+
         result = await client(GetFullChannelRequest(entity))
         if hasattr(result, 'chats') and len(result.chats) > 0:
             chat = result.chats[0]
