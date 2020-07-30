@@ -7,6 +7,7 @@ import dotenv
 import logging
 
 from channels import Channels
+from settings import whitelist
 
 dotenv.load_dotenv()
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
@@ -27,15 +28,16 @@ async def handle_spam(event):
     #         pts_count=1),
     #     pattern_match=None,
     #     message=Message(id=x, to_id=PeerChannel(channel_id=x), date=datetime.datetime(x), message='xxx', out=False, mentioned=False, media_unread=False, silent=False, post=False, from_scheduled=False, legacy=False, edit_hide=False, from_id=x, fwd_from=None, via_bot_id=None, reply_to_msg_id=None, media=None, reply_markup=None, entities=[MessageEntityUrl(offset=0, length=55)], views=None, edit_date=None, post_author=None, grouped_id=None, restriction_reason=[]))
-    if 'https://' in event.text or 'http://' in event.text:
+    sender = event.sender_id
+    if sender not in whitelist and ('https://' in event.text or 'http://' in event.text):
         channel = await channels.describe(client, event.chat_id)
 
         try:
             await event.delete()
-            log.info(f'{channel} 👤{event.sender_id} delete spam 🆔{event.message.id}: {event.text}')
+            log.info(f'{channel} 👤{sender} delete spam 🆔{event.message.id}: {event.text}')
 
         except errors.rpcerrorlist.MessageDeleteForbiddenError:
-            log.debug(f'{channel} 👤{event.sender_id} failed delete spam {event} due to MessageDeleteForbiddenError')
+            log.debug(f'{channel} 👤{sender} failed delete spam {event} due to MessageDeleteForbiddenError')
 
 
 

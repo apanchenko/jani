@@ -22,7 +22,8 @@ class Channels:
         try:
             entity = await client.get_input_entity(PeerChannel(id))
         except:
-            log.exception(f'‼️ Failed get_input_entity({id})')
+            # ValueError: Could not find the input entity for <telethon.tl.types.PeerChannel object at 0x7f03496580a0>. Please read https://docs.telethon.dev/en/latest/concepts/entities.html to find out more details.
+            log.warning(f'‼️ Failed get_input_entity({id})')
             return None
 
         result = await client(GetFullChannelRequest(entity))
