@@ -7,7 +7,7 @@
 - Welcome messages
 - Scheduled messages
 - Anti spam
-  - Black and white spam words lists
+- Black and white spam words lists
 - CRM
 - Branded bots
 

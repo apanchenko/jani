@@ -5,6 +5,7 @@ from telethon.tl.functions.channels import GetFullChannelRequest
 
 import dotenv
 import logging
+import re
 
 from channels import Channels
 from settings import whitelist
@@ -29,13 +30,22 @@ async def handle_spam(event):
     #     pattern_match=None,
     #     message=Message(id=x, to_id=PeerChannel(channel_id=x), date=datetime.datetime(x), message='xxx', out=False, mentioned=False, media_unread=False, silent=False, post=False, from_scheduled=False, legacy=False, edit_hide=False, from_id=x, fwd_from=None, via_bot_id=None, reply_to_msg_id=None, media=None, reply_markup=None, entities=[MessageEntityUrl(offset=0, length=55)], views=None, edit_date=None, post_author=None, grouped_id=None, restriction_reason=[]))
     sender = event.sender_id
-    if sender not in whitelist and ('https://' in event.text or 'http://' in event.text):
+    if sender in whitelist:
+        return
+        
+    if 'https://' in event.text or 'http://' in event.text:
         channel = await channels.describe(client, event.chat_id)
-
         try:
             await event.delete()
             log.info(f'{channel} 👤{sender} delete spam 🆔{event.message.id}: {event.text}')
+        except errors.rpcerrorlist.MessageDeleteForbiddenError:
+            log.debug(f'{channel} 👤{sender} failed delete spam {event} due to MessageDeleteForbiddenError')
 
+    if re.search("k\s*y\s*c", event.text, re.IGNORECASE):
+        channel = await channels.describe(client, event.chat_id)
+        try:
+            await event.delete()
+            log.info(f'{channel} 👤{sender} delete spam 🆔{event.message.id}: {event.text}')
         except errors.rpcerrorlist.MessageDeleteForbiddenError:
             log.debug(f'{channel} 👤{sender} failed delete spam {event} due to MessageDeleteForbiddenError')
 
