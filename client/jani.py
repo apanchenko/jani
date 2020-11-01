@@ -1,7 +1,7 @@
 import os
+from typing import Any
 from telethon import TelegramClient, events, errors
-from telethon.tl.types import TypeChat, User, MessageActionChatJoinedByLink, MessageActionChatAddUser, PeerChannel, InputMessagesFilterUrl
-from telethon.tl.functions.channels import GetFullChannelRequest
+from telethon.tl.types import MessageActionChatJoinedByLink
 
 import dotenv
 import logging
@@ -11,17 +11,21 @@ from channels import Channels
 from settings import whitelist
 
 dotenv.load_dotenv()
-logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.INFO)
+logging.basicConfig(
+    format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+    level=logging.INFO)
 log = logging.getLogger(name='client')
 log.setLevel(level=logging.INFO)
 
-client = TelegramClient('Jani Space Service', os.environ['API_ID'], os.environ['API_HASH']).start(bot_token=os.environ['BOT_TOKEN'])
+client = TelegramClient(
+    'Jani Space Service',
+    os.environ['API_ID'],
+    os.environ['API_HASH']).start(bot_token=os.environ['BOT_TOKEN'])
 channels = Channels()
 
 
 @client.on(events.NewMessage())
-async def handle_spam(event):
+async def handle_spam(event: Any) -> None:
     # NewMessage.Event(
     #     original_update=UpdateNewChannelMessage(
     #         message=Message(id=x, to_id=PeerChannel(channel_id=x), date=datetime.datetime(x), message='xxx', out=False, mentioned=False, media_unread=False, silent=False, post=False, from_scheduled=False, legacy=False, edit_hide=False, from_id=x, fwd_from=None, via_bot_id=None, reply_to_msg_id=None, media=None, reply_markup=None, entities=[MessageEntityUrl(offset=0, length=55)], views=None, edit_date=None, post_author=None, grouped_id=None, restriction_reason=[]),
@@ -32,7 +36,7 @@ async def handle_spam(event):
     sender = event.sender_id
     if sender in whitelist:
         return
-        
+
     if 'https://' in event.text or 'http://' in event.text:
         channel = await channels.describe(client, event.chat_id)
         try:
@@ -50,9 +54,8 @@ async def handle_spam(event):
             log.debug(f'{channel} 👤{sender} failed delete spam {event} due to MessageDeleteForbiddenError')
 
 
-
-@client.on(events.ChatAction(func=lambda e: e.user_joined))# or e.user_added))
-async def handler(event):
+@client.on(events.ChatAction(func=lambda e: e.user_joined))  # or e.user_added))
+async def handler(event: Any) -> None:
     channel = await channels.describe(client, event.chat_id)
     action_message = event.action_message
     if action_message is None:
