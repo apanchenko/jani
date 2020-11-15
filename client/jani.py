@@ -10,11 +10,16 @@ import re
 from channels import Channels
 from settings import whitelist
 
+
 dotenv.load_dotenv()
-logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.INFO)
+
+logging.basicConfig(
+    format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+    level=logging.INFO)
+
 log = logging.getLogger(name='client')
 log.setLevel(level=logging.INFO)
+log.info(f'Create tg client')
 
 client = TelegramClient('Jani Space Service', os.environ['API_ID'], os.environ['API_HASH']).start(bot_token=os.environ['BOT_TOKEN'])
 channels = Channels()
@@ -49,8 +54,6 @@ async def handle_spam(event):
         except errors.rpcerrorlist.MessageDeleteForbiddenError:
             log.debug(f'{channel} 👤{sender} failed delete spam {event} due to MessageDeleteForbiddenError')
 
-
-
 @client.on(events.ChatAction(func=lambda e: e.user_joined))# or e.user_added))
 async def handler(event):
     channel = await channels.describe(client, event.chat_id)
@@ -82,6 +85,5 @@ async def handler(event):
     except errors.rpcerrorlist.MessageDeleteForbiddenError:
         log.debug(f'{channel} 👤{action_message.from_id} failed delete {event} due to MessageDeleteForbiddenError')
 
-
-if __name__ == '__main__':
+def run():
     client.run_until_disconnected()

@@ -1,2 +1,3 @@
 python-dotenv==0.14.0
 telethon==1.15.0
+sentry-sdk==0.19.3
