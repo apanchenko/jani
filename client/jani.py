@@ -3,15 +3,12 @@ from telethon import TelegramClient, events, errors
 from telethon.tl.types import TypeChat, User, MessageActionChatJoinedByLink, MessageActionChatAddUser, PeerChannel, InputMessagesFilterUrl
 from telethon.tl.functions.channels import GetFullChannelRequest
 
-import dotenv
 import logging
 import re
 
 from channels import Channels
 from settings import whitelist
 
-
-dotenv.load_dotenv()
 
 logging.basicConfig(
     format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',

@@ -2,7 +2,7 @@
 
 ## Todo
 
-- Describe deploy process
+- Github action to deploy to DO
 - Whitelist channel->sender pairs so that channel owner can bypass spam filter
 - Welcome messages
 - Scheduled messages
@@ -13,5 +13,7 @@
 
 ## Done
 
+- 2020-12-13 remove .env file
+- 2020-12-06 deploy using DOCR
 - Basic spam filter
 - Delete message about joined user
