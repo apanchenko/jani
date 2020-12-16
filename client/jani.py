@@ -12,11 +12,18 @@ from settings import whitelist
 
 logging.basicConfig(
     format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-    level=logging.INFO)
+    level=logging.DEBUG)
 
 log = logging.getLogger(name='client')
 log.setLevel(level=logging.INFO)
 log.info(f'Create tg client')
+
+
+if 'API_ID' not in os.environ:
+    with open('.jani') as f:
+        for line in f:
+            key, value = line.strip().split('=', 1)
+            os.environ[key] = value
 
 client = TelegramClient('Jani Space Service', os.environ['API_ID'], os.environ['API_HASH']).start(bot_token=os.environ['BOT_TOKEN'])
 channels = Channels()
