@@ -12,7 +12,7 @@ from settings import whitelist
 
 logging.basicConfig(
     format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-    level=logging.DEBUG)
+    level=logging.INFO)
 
 log = logging.getLogger(name='client')
 log.setLevel(level=logging.INFO)
