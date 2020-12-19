@@ -7,3 +7,4 @@ __pycache__
 # telethon
 *.session
 *.session-journal
+.vscode/settings.json

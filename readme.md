@@ -7,7 +7,8 @@ Jani is a janitor bot for telegram
 ```bash
 docker build -t jani .
 docker run -d --rm --name jani --env-file ~/.jani jani
-docker logs jani
+docker run -d --rm --name jani --env-file ~/.jani --cap-drop ALL jani
+docker logs jani --follow
 docker stop jani
 ```
 

@@ -2,6 +2,7 @@
 
 ## Todo
 
+- Ping
 - Statistics
 - Tests
 - Github action to deploy to DO
