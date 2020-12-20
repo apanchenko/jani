@@ -30,7 +30,7 @@ channels = Channels()
 @client.on(events.ChatAction(func=lambda e: e.user_joined))# or e.user_added))
 async def handler(event):
 
-    if type(event) == UpdateNewMessage:
+    if 'chat_id' not in event:
         return
 
     channel = await channels.describe(client, event.chat_id)
