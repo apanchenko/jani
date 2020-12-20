@@ -30,9 +30,6 @@ channels = Channels()
 @client.on(events.ChatAction(func=lambda e: e.user_joined))# or e.user_added))
 async def handler(event):
 
-    if 'chat_id' not in event:
-        return
-
     channel = await channels.describe(client, event.chat_id)
     action_message = event.action_message
     if action_message is None:
@@ -65,5 +62,5 @@ async def handler(event):
 def run():
     client.add_event_handler(handle_ping)
     client.add_event_handler(handle_spam)
-    client.add_event_handler(handler)
+    #client.add_event_handler(handler)
     client.run_until_disconnected()
