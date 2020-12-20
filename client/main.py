@@ -5,6 +5,9 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 
 import jani
 
+# logging.basicConfig(
+#     format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+#     level=logging.INFO)
 
 # All of this is already happening by default!
 sentry_logging = LoggingIntegration(
