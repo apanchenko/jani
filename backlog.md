@@ -2,6 +2,7 @@
 
 ## Todo
 
+- builder image
 - read channel admins
 - Describe deploy process
 - Statistics

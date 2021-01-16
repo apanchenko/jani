@@ -1,18 +1,16 @@
-import os
-import logging
+import os, logging
 
 from telethon import events
-from telethon.events import StopPropagation
 
 from ..settings import admin
 
-log = logging.getLogger(name='client')
-
+log = logging.getLogger(__name__)
+reply = f'pong from {os.getenv("JANI_HOST", "?")}'
 
 @events.register(events.NewMessage(pattern='/ping'))
 async def handle_ping(event):
     """
-    Handle private message /ping with reply pong
+    Handle private command /ping
     """
     if not event.is_private:
         return
@@ -21,8 +19,8 @@ async def handle_ping(event):
     if sender.id != admin:
         return
 
-    await event.respond(f'pong from {os.environ["JANI_HOST"]}')
+    await event.respond(reply)
 
     log.info(f'/ping from 👤{sender.id}')
 
-    raise StopPropagation
+    raise events.StopPropagation

@@ -4,10 +4,16 @@ RUN useradd --create-home appuser
 WORKDIR /home/appuser
 USER appuser
 
+# install required libs
 COPY ./requirements.pip . 
 RUN pip install --no-cache-dir -r requirements.pip
 
-COPY ./client ./client
+# copy jani sources
 COPY main.py .
+COPY ./client ./client
+
+# set commit hash
+ARG GIT_COMMIT
+ENV GIT_COMMIT=$GIT_COMMIT
 
 CMD [ "python", "main.py" ]
