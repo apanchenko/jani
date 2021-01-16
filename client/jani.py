@@ -6,6 +6,7 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 from telethon import TelegramClient
 
 from .commands.ping import handle_ping
+from .commands.version import handle_version
 from .filters.spam import handle_spam
 from .filters.joined import filter_joined
 from .utils.env import load_env_file
@@ -39,6 +40,7 @@ def run():
 
     client.start(bot_token=os.environ['BOT_TOKEN'])
     client.add_event_handler(handle_ping)
+    client.add_event_handler(handle_version)
     client.add_event_handler(handle_spam)
     client.add_event_handler(filter_joined)
     client.run_until_disconnected()

@@ -23,6 +23,7 @@ python main.py
 ## [Push to DOCR](https://www.digitalocean.com/docs/container-registry/quickstart/)
 
 ```bash
-docker tag <IMAGE ID> registry.digitalocean.com/apanchenko/jani
+docker tag jani registry.digitalocean.com/apanchenko/jani
 docker push registry.digitalocean.com/apanchenko/jani
+docker pull registry.digitalocean.com/apanchenko/jani
 ```

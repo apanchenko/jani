@@ -17,6 +17,7 @@
 
 ## Done
 
+- add /version command
 - add /ping command
 - deploy using DOCR
 - add basic spam filter
