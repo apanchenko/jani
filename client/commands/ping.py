@@ -21,8 +21,8 @@ async def handle_ping(event):
     if sender.id != admin:
         return
 
-    log.info(f'/ping from 👤{sender.id}')
-
     await event.respond(f'pong from {os.environ["JANI_HOST"]}')
+
+    log.info(f'/ping from 👤{sender.id}')
 
     raise StopPropagation

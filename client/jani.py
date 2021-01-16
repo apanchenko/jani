@@ -4,13 +4,18 @@ import logging
 import sentry_sdk
 from sentry_sdk.integrations.logging import LoggingIntegration
 from telethon import TelegramClient, events, errors
-from telethon.tl.types import MessageActionChatJoinedByLink, UpdateNewMessage
+from telethon.tl.types import MessageActionChatJoinedByLink
 
 from .channels import Channels
 from .commands.ping import handle_ping
 from .filters.spam import handle_spam
+from .utils.env import load_env_file
 
 from .settings import whitelist
+
+logging.basicConfig(
+    format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+    level=logging.INFO)
 
 # optionally load secrets from file
 if 'API_ID' not in os.environ:
@@ -23,6 +28,7 @@ channels = Channels()
 #@client.on(events.ChatAction(func=lambda e: e.user_joined))# or e.user_added))
 @events.register(events.ChatAction(func=lambda e: e.user_joined))
 async def handler(event):
+
     channel = await channels.describe(client, event.chat_id)
     action_message = event.action_message
     if action_message is None:

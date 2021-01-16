@@ -2,9 +2,9 @@
 __pycache__
 .venv
 .env
+.jani
 
 # telethon
 *.session
 *.session-journal
-
-.jani
+.vscode/settings.json
