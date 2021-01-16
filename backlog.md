@@ -2,6 +2,7 @@
 
 ## Todo
 
+- read channel admins
 - Describe deploy process
 - Statistics
 - Tests
