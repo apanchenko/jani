@@ -1,57 +1,27 @@
 import os
-from telethon import TelegramClient, events, errors
-from telethon.tl.types import TypeChat, User, MessageActionChatJoinedByLink, MessageActionChatAddUser, PeerChannel, InputMessagesFilterUrl
-from telethon.tl.functions.channels import GetFullChannelRequest
-
-import dotenv
 import logging
-import re
 
-from channels import Channels
-from settings import whitelist
+import sentry_sdk
+from sentry_sdk.integrations.logging import LoggingIntegration
+from telethon import TelegramClient, events, errors
+from telethon.tl.types import MessageActionChatJoinedByLink, UpdateNewMessage
 
-dotenv.load_dotenv()
-logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.INFO)
-log = logging.getLogger(name='client')
-log.setLevel(level=logging.INFO)
+from .channels import Channels
+from .commands.ping import handle_ping
+from .filters.spam import handle_spam
 
-client = TelegramClient('Jani Space Service', os.environ['API_ID'], os.environ['API_HASH']).start(bot_token=os.environ['BOT_TOKEN'])
+from .settings import whitelist
+
+# optionally load secrets from file
+if 'API_ID' not in os.environ:
+    load_env_file('.jani')
+
+log = logging.getLogger(__name__)
+client = TelegramClient(session='jani', api_id=os.environ['API_ID'], api_hash=os.environ['API_HASH']).start(bot_token=os.environ['BOT_TOKEN'])
 channels = Channels()
 
-
-@client.on(events.NewMessage())
-async def handle_spam(event):
-    # NewMessage.Event(
-    #     original_update=UpdateNewChannelMessage(
-    #         message=Message(id=x, to_id=PeerChannel(channel_id=x), date=datetime.datetime(x), message='xxx', out=False, mentioned=False, media_unread=False, silent=False, post=False, from_scheduled=False, legacy=False, edit_hide=False, from_id=x, fwd_from=None, via_bot_id=None, reply_to_msg_id=None, media=None, reply_markup=None, entities=[MessageEntityUrl(offset=0, length=55)], views=None, edit_date=None, post_author=None, grouped_id=None, restriction_reason=[]),
-    #         pts=24638,
-    #         pts_count=1),
-    #     pattern_match=None,
-    #     message=Message(id=x, to_id=PeerChannel(channel_id=x), date=datetime.datetime(x), message='xxx', out=False, mentioned=False, media_unread=False, silent=False, post=False, from_scheduled=False, legacy=False, edit_hide=False, from_id=x, fwd_from=None, via_bot_id=None, reply_to_msg_id=None, media=None, reply_markup=None, entities=[MessageEntityUrl(offset=0, length=55)], views=None, edit_date=None, post_author=None, grouped_id=None, restriction_reason=[]))
-    sender = event.sender_id
-    if sender in whitelist:
-        return
-        
-    if 'https://' in event.text or 'http://' in event.text:
-        channel = await channels.describe(client, event.chat_id)
-        try:
-            await event.delete()
-            log.info(f'{channel} 👤{sender} delete spam 🆔{event.message.id}: {event.text}')
-        except errors.rpcerrorlist.MessageDeleteForbiddenError:
-            log.debug(f'{channel} 👤{sender} failed delete spam {event} due to MessageDeleteForbiddenError')
-
-    if re.search("k\s*y\s*c", event.text, re.IGNORECASE):
-        channel = await channels.describe(client, event.chat_id)
-        try:
-            await event.delete()
-            log.info(f'{channel} 👤{sender} delete spam 🆔{event.message.id}: {event.text}')
-        except errors.rpcerrorlist.MessageDeleteForbiddenError:
-            log.debug(f'{channel} 👤{sender} failed delete spam {event} due to MessageDeleteForbiddenError')
-
-
-
-@client.on(events.ChatAction(func=lambda e: e.user_joined))# or e.user_added))
+#@client.on(events.ChatAction(func=lambda e: e.user_joined))# or e.user_added))
+@events.register(events.ChatAction(func=lambda e: e.user_joined))
 async def handler(event):
     channel = await channels.describe(client, event.chat_id)
     action_message = event.action_message
@@ -83,5 +53,19 @@ async def handler(event):
         log.debug(f'{channel} 👤{action_message.from_id} failed delete {event} due to MessageDeleteForbiddenError')
 
 
-if __name__ == '__main__':
+def run():
+    # All of this is already happening by default!
+    sentry_logging = LoggingIntegration(
+        level=logging.INFO,        # Capture info and above as breadcrumbs
+        event_level=logging.ERROR,  # Send errors as events
+    )
+    sentry_sdk.init(
+        dsn=os.environ['SENTRY_DSN'],
+        traces_sample_rate=1.0,
+        integrations=[sentry_logging]
+    )
+
+    client.add_event_handler(handle_ping)
+    client.add_event_handler(handle_spam)
+    client.add_event_handler(handler)
     client.run_until_disconnected()

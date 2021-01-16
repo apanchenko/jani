@@ -3,6 +3,9 @@
 ## Todo
 
 - Describe deploy process
+- Statistics
+- Tests
+- Github action to deploy to DO
 - Whitelist channel->sender pairs so that channel owner can bypass spam filter
 - Welcome messages
 - Scheduled messages
@@ -13,5 +16,7 @@
 
 ## Done
 
-- Basic spam filter
-- Delete message about joined user
+- add /ping command
+- deploy using DOCR
+- add basic spam filter
+- delete message about joined user

@@ -6,4 +6,7 @@ COPY ./client .
 COPY ./requirements.pip . 
 RUN pip install --no-cache-dir -r requirements.pip
 
-CMD [ "python", "jani.py" ]
+COPY ./client ./client
+COPY main.py .
+
+CMD [ "python", "main.py" ]
