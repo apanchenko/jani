@@ -2,6 +2,8 @@
 
 ## Todo
 
+- /bug to report a bug
+- /check permissions to delete messages
 - builder image
 - read channel admins
 - Describe deploy process
@@ -18,6 +20,7 @@
 
 ## Done
 
+- add /help command
 - add /version command
 - add /ping command
 - deploy using DOCR
