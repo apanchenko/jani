@@ -25,6 +25,8 @@ def run():
     if 'API_ID' not in os.environ:
         load_env_file('.jani')
 
+    log.info(f'run on {os.getenv("JANI_HOST")}, git commit: {os.getenv("GIT_COMMIT")}')
+
     # init sentry
     sentry_logging = LoggingIntegration(
         level=logging.INFO,        # Capture info and above as breadcrumbs
@@ -35,17 +37,17 @@ def run():
         traces_sample_rate=1.0,
         integrations=[sentry_logging])
 
-    loop = asyncio.get_event_loop()
+    #loop = asyncio.get_event_loop()
 
     # create telegram client
     with TelegramClient(
-        session='jani',
-        api_id=os.environ['API_ID'],
-        api_hash=os.environ['API_HASH']) as client:
+        session   = 'jani',
+        api_id    = os.environ['API_ID'],
+        api_hash  = os.environ['API_HASH']).start(
+        bot_token = os.environ['BOT_TOKEN']) as client:
 
         #loop.create_task(show_channels(client, log))
 
-        client.start(bot_token=os.environ['BOT_TOKEN'])
         client.add_event_handler(handle_ping)
         client.add_event_handler(handle_version)
         client.add_event_handler(handle_help)
