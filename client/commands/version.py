@@ -3,7 +3,7 @@ from telethon import events
 from .. import __version__
 
 log = logging.getLogger(__name__)
-git_commit = os.getenv('GIT_COMMIT', '')[:7]
+git_commit = os.getenv('GIT_COMMIT', '?')[:7]
 reply = f'{__version__} commit: {git_commit}'
 
 @events.register(events.NewMessage(pattern='/version'))
