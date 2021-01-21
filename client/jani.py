@@ -11,6 +11,7 @@ from .commands.version import handle_version
 from .commands.help import handle_help
 from .filters.spam import handle_spam
 from .filters.joined import filter_joined
+from .message.private import handle_private_message
 from .utils.env import load_env_file
 
 
@@ -53,4 +54,5 @@ def run():
         client.add_event_handler(handle_help)
         client.add_event_handler(handle_spam)
         client.add_event_handler(filter_joined)
+        client.add_event_handler(handle_private_message)
         client.run_until_disconnected()

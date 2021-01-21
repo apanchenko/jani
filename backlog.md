@@ -20,6 +20,7 @@
 
 ## Done
 
+- forward private messages to admin
 - add /help command
 - add /version command
 - add /ping command
