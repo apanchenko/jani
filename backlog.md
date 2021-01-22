@@ -20,6 +20,7 @@
 
 ## Done
 
+- filter contacts in private messages
 - forward private messages to admin
 - add /help command
 - add /version command
