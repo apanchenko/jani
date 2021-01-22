@@ -8,19 +8,18 @@ log = logging.getLogger(__name__)
 reply = f'pong from {os.getenv("JANI_HOST", "?")}'
 
 @events.register(events.NewMessage(pattern='/ping'))
-async def handle_ping(event):
+async def handle_ping(message) -> None:
     """
     Handle private command /ping
     """
-    if not event.is_private:
+    if not message.is_private:
         return
 
-    sender = await event.get_sender() # event.sender_id
-    if sender.id != admin:
+    if message.sender_id != admin:
         return
 
-    await event.respond(reply)
+    await message.respond(reply)
 
-    log.info(f'/ping from 👤{sender.id}')
+    log.info(f'/ping from 👤{message.sender_id}')
 
     raise events.StopPropagation

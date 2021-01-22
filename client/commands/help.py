@@ -15,16 +15,12 @@ Follow these steps:
 '''
 
 @events.register(events.NewMessage(pattern='/help'))
-async def handle_help(event):
+async def handle_help(message):
     """
     Handle private command /help
     """
-    if not event.is_private:
+    if not message.is_private:
         return
 
-    await event.respond(reply)
-
-    sender = await event.get_sender()
-    log.info(f'/help from 👤{sender.id}')
-
+    await message.respond(reply)
     raise events.StopPropagation
