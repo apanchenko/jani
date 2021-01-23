@@ -1,9 +1,9 @@
 import os, logging
 from telethon import events
-from .. import __version__
 
 log = logging.getLogger(__name__)
-git_commit = os.getenv('GIT_COMMIT', '?')[:7]
+git_commit = os.getenv('GIT_COMMIT', 'unspecified')
+__version__ = os.getenv('JANI_VERSION', 'unspecified')
 reply = f'{__version__} commit: {git_commit}'
 
 @events.register(events.NewMessage(pattern='/version'))

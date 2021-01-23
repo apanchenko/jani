@@ -1,3 +1,8 @@
-docker build --build-arg GIT_COMMIT=$(git rev-parse --short HEAD) -t registry.digitalocean.com/apanchenko/jani:0.1.0 .
+JANI_VERSION=$(git describe)
 
-docker push registry.digitalocean.com/apanchenko/jani:0.1.0
+docker build\
+    --build-arg GIT_COMMIT=$(git rev-parse --short HEAD)\
+    --build-arg JANI_VERSION=$JANI_VERSION\
+    -t registry.digitalocean.com/apanchenko/jani:$JANI_VERSION .
+
+docker push registry.digitalocean.com/apanchenko/jani:$JANI_VERSION
