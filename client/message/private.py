@@ -27,8 +27,14 @@ async def handle_private_message(msg) -> None:
     if msg.sender_id == admin and msg.is_reply:
         origin = await msg.get_reply_message()
         if origin and origin.forward:
-            log.info(f'reply "{msg.text}" from admin to {origin.forward.sender_id}')
-            await msg.client.send_message(origin.forward.sender_id, msg.text)
+            user_id = origin.forward.sender_id
+            if user_id is None:
+                # reply to admin that original sender is unknown
+                await msg.reply("cannot reply: sender is unknown")
+            else:
+                # send text from admin to original sender
+                log.info(f'reply "{msg.text}" from admin to {user_id}')
+                await msg.client.send_message(user_id, msg.text)
         return
 
     # forward incoming message to admin 

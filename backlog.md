@@ -20,8 +20,8 @@
 
 ## Done
 
-- filter contacts in private messages
-- forward private messages to admin
+- filter documents in private messages
+- forward private messages between user and admin
 - add /help command
 - add /version command
 - add /ping command
