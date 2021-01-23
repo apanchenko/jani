@@ -2,21 +2,18 @@
 
 ## Todo
 
-- /bug to report a bug
-- /check permissions to delete messages
-- builder image
+- save processed message offsets to not skip messages during restart
+- add command /bug to report a bug
+- add command /check permissions to delete messages
+- builder image to decrease image size
 - read channel admins
-- Describe deploy process
 - Statistics
 - Tests
 - Github action to deploy to DO
 - Whitelist channel->sender pairs so that channel owner can bypass spam filter
 - Welcome messages
-- Scheduled messages
 - Anti spam
 - Black and white spam words lists
-- CRM
-- Branded bots
 
 ## Done
 

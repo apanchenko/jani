@@ -6,7 +6,8 @@ USER appuser
 
 # install required libs
 COPY ./requirements.pip . 
-RUN pip install --no-cache-dir -r requirements.pip
+RUN pip install -U pip \
+   && pip install --no-cache-dir -r requirements.pip
 
 # copy jani sources
 COPY main.py .
