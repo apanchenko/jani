@@ -2,6 +2,16 @@
 
 Jani is a janitor bot for telegram
 
+## Flow
+
+```bash
+git checkout master
+git merge dev
+git tag -a 0.1.12
+git push --tags
+./build.sh
+```
+
 ## Run bot in docker
 
 ```bash
