@@ -19,14 +19,17 @@ async def handle_private_message(msg) -> None:
         return
 
     # allow text only
-    if (    (msg.gif is not None) or
-            (msg.file is not None) or
-            (msg.photo is not None) or
-            (msg.audio is not None) or
-            (msg.voice is not None) or
-            (msg.video is not None) or
-            (msg.contact is not None) or
-            (msg.document is not None) ):
+    if (msg.gif is not None or
+        msg.file is not None or
+        msg.photo is not None or
+        msg.audio is not None or
+        msg.voice is not None or
+        msg.video is not None or
+        msg.contact is not None or
+        msg.document is not None or
+        'https://' in msg.text or
+        'http://' in msg.text
+    ):
         await msg.reply('Do not send me this, please.')
         return
 
