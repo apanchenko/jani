@@ -1,10 +1,9 @@
 import os
-import asyncio
 import logging
 
 import sentry_sdk
 from sentry_sdk.integrations.logging import LoggingIntegration
-from telethon import TelegramClient, functions
+from telethon import TelegramClient
 
 from .commands.ping import handle_ping
 from .commands.version import handle_version
@@ -13,6 +12,7 @@ from .filters.spam import handle_spam
 from .filters.joined import filter_joined
 from .message.private import handle_private_message
 from .utils.env import load_env_file
+from .utils.monitor import monitor
 
 
 def run():
@@ -38,7 +38,12 @@ def run():
         traces_sample_rate=1.0,
         integrations=[sentry_logging])
 
-    #loop = asyncio.get_event_loop()
+    monitor.init(
+        url = os.getenv("INFLUXDB_V2_URL"),
+        org = os.getenv("INFLUXDB_V2_ORG"),
+        token = os.getenv("INFLUXDB_V2_TOKEN"),
+        bucket = os.getenv("INFLUXDB_BUCKET")
+    )
 
     # create telegram client
     with TelegramClient(

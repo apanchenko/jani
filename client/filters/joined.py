@@ -4,12 +4,12 @@ from telethon import events, errors
 from telethon.tl.types import MessageActionChatJoinedByLink
 
 from ..channels import get_from
-
+from ..utils.monitor import monitor
 from ..settings import whitelist
 
 log = logging.getLogger(__name__)
 
-
+@monitor()
 @events.register(events.ChatAction(func=lambda e: e.user_joined))
 async def filter_joined(event):
     desc = await get_from(event)

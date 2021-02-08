@@ -8,9 +8,11 @@ from telethon.events import StopPropagation
 
 from ..channels import get_from
 from ..settings import whitelist
+from ..utils.monitor import monitor
 
 log = logging.getLogger(__name__)
 
+@monitor()
 @events.register(events.NewMessage())
 async def handle_spam(event):
 

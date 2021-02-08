@@ -24,7 +24,9 @@ docker stop jani
 ## Run without docker
 
 ```bash
+python3 -m venv .venv
 source .venv/bin/activate
+pip install --upgrade pip
 pip install -r requirements.pip
 python main.py
 ```

@@ -1,11 +1,13 @@
+from client.utils.monitor import monitor
 import logging
 from telethon import events
 
+from ..utils.monitor import monitor
 from ..settings import admin
 
 log = logging.getLogger(__name__)
 
-
+@monitor()
 @events.register(events.NewMessage(outgoing=False))
 async def handle_private_message(msg) -> None:
     """

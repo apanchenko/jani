@@ -1,6 +1,9 @@
 import logging
 from telethon import events
 
+from ..utils.monitor import monitor
+
+
 log = logging.getLogger(__name__)
 
 reply = f'''**Jani Bot** help
@@ -14,6 +17,7 @@ Follow these steps:
 /help - show this message
 '''
 
+@monitor()
 @events.register(events.NewMessage(pattern='/help'))
 async def handle_help(message):
     """
