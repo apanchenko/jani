@@ -1,14 +1,14 @@
 import os, logging
 from telethon import events
 
-from ..utils.monitor import monitor
+from ..utils.measure import measured
 
 log = logging.getLogger(__name__)
 git_commit = os.getenv('GIT_COMMIT', 'unspecified')
 __version__ = os.getenv('JANI_VERSION', 'unspecified')
 reply = f'{__version__} commit: {git_commit}'
 
-@monitor()
+@measured()
 @events.register(events.NewMessage(pattern='/version'))
 async def handle_version(event):
     """

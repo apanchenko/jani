@@ -12,7 +12,7 @@ from .filters.spam import handle_spam
 from .filters.joined import filter_joined
 from .message.private import handle_private_message
 from .utils.env import load_env_file
-from .utils.monitor import monitor
+from .utils import measure
 
 
 def run():
@@ -29,16 +29,18 @@ def run():
     log.info(f'run on {os.getenv("JANI_HOST")}, git commit: {os.getenv("GIT_COMMIT")}')
 
     # init sentry
-    sentry_logging = LoggingIntegration(
-        level=logging.INFO,        # Capture info and above as breadcrumbs
-        event_level=logging.ERROR) # Send errors as events
+    if os.getenv('JANI_SENTRY_ENABLED') == 'True':
+        sentry_logging = LoggingIntegration(
+            level = logging.INFO,        # Capture info and above as breadcrumbs
+            event_level = logging.ERROR  # Send errors as events
+        )
+        sentry_sdk.init(
+            dsn = os.environ['SENTRY_DSN'],
+            traces_sample_rate = 1.0,
+            integrations = [sentry_logging]
+        )
 
-    sentry_sdk.init(
-        dsn=os.environ['SENTRY_DSN'],
-        traces_sample_rate=1.0,
-        integrations=[sentry_logging])
-
-    monitor.init(
+    measure.init(
         url = os.getenv("INFLUXDB_V2_URL"),
         org = os.getenv("INFLUXDB_V2_ORG"),
         token = os.getenv("INFLUXDB_V2_TOKEN"),

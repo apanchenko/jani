@@ -1,7 +1,7 @@
 import logging
 from telethon import events
 
-from ..utils.monitor import monitor
+from ..utils.measure import measured
 
 
 log = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ Follow these steps:
 /help - show this message
 '''
 
-@monitor()
+@measured()
 @events.register(events.NewMessage(pattern='/help'))
 async def handle_help(message):
     """
