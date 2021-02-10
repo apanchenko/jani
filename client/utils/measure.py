@@ -1,9 +1,7 @@
 """
-- measures function calls TPS and Latency
+Performance measurement
+- measures function calls: TPS and Latency
 - reports to InfluxDB
-
-TODO: align reports in time by period
-TODO: set measurements accuracy
 
 Usage:
     measure.init(...)
@@ -11,6 +9,13 @@ Usage:
     @measured
     def do_something()
         ...
+
+TODO: report every period
+TODO: batch reports
+TODO: set measurements accuracy
+TODO: optionally set label for any measured
+TODO: tests
+TODO: separate library
 """
 
 import time, logging
@@ -20,30 +25,30 @@ from functools import wraps
 from influxdb_client import InfluxDBClient, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 
-_bucket:      str = ''
-_write_api        = None
-_granularity: int = 60
-_send_time:   float
-_records:     Dict[str, Any] = {}
-_log           = logging.getLogger(__name__)
+_bucket:  str
+_influx:  Any
+_delay:   int
+_period:  int = 0
+_records: Dict[str, Any] = {}
+_log      = logging.getLogger(__name__)
 
 
-def init(url: str, org: str, token: str, bucket: str) -> None:
+def init(url: str, org: str, token: str, bucket: str, delay_m: int = 1) -> None:
     """
-    Initialize before any measured function called
+    Initialize measures before any measured function called
 
-    :param url: InfluxDB server API url
-    :param org: organization name
-    :param token: auth token
-    :param bucket: destination bucket name
+    url     : InfluxDB server API url
+    org     : organization name
+    token   : auth token
+    bucket  : destination bucket name
+    delay_m : minutes between consecutive reports
     """
-    global _write_api
-    global _bucket
-    global _send_time
+    global _influx, _bucket, _delay
     client = InfluxDBClient(url=url, org=org, token=token)
-    _write_api = client.write_api(write_options=SYNCHRONOUS)
+    _influx = client.write_api(write_options=SYNCHRONOUS)
     _bucket = bucket
-    _send_time = time.time() + _granularity
+    _delay = delay_m * 60
+    _log.info(f'Measure every {delay_m} minute' + ('s' if delay_m > 1 else ''))
 
 
 class measured:
@@ -65,32 +70,33 @@ class measured:
 
         return wrapper
 
-    def linear(self, ts: float) -> str:
+    def linear(self, ts: str) -> str:
         if self.count == 0:
-            return f'{self.label} tps={0},latency={0} {int(ts * 1000)}'
+            return f'{self.label} tps={0},latency={0} {ts}'
 
-        tps = self.count / _granularity
+        tps = self.count / _delay
         latency = self.duration / self.count
         self.count = 0
         self.duration = 0
-        return f'{self.label} tps={tps},latency={latency} {int(ts * 1000)}'
+        return f'{self.label} tps={tps},latency={latency} {ts}'
 
 
-def _report(mon: measured, ts: float) -> None:
+def _report(mon: measured, start: float) -> None:
+    now = time.time()
     mon.count += 1
-    mon.duration += time.time() - ts
+    mon.duration += now - start
 
-    global _records
+    global _records, _period
     _records[mon.label] = mon
 
-    global _send_time
-    if ts < _send_time:
+    period = int(now / _delay)
+    if period <= _period:
         return
 
-    records = [m.linear(ts) for label, m in _records.items()],
-    _log.info('measured -------------->')
+    _period = period
+
+    ts = str(period * _delay)
+    records = [m.linear(ts) for m in _records.values()]
     _log.info(records)
 
-    _write_api.write(bucket=_bucket, record=records, write_precision=WritePrecision.MS)
-
-    _send_time = ts + _granularity
+    _influx.write(bucket=_bucket, record=records, write_precision=WritePrecision.S)
