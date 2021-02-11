@@ -8,7 +8,7 @@ from telethon.events import StopPropagation
 
 from ..channels import get_from
 from ..settings import whitelist
-from ..utils.measure import measured
+from ..utils.jordan import measured
 
 log = logging.getLogger(__name__)
 

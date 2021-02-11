@@ -4,7 +4,7 @@ from telethon import events, errors
 from telethon.tl.types import MessageActionChatJoinedByLink
 
 from ..channels import get_from
-from ..utils.measure import measured
+from ..utils.jordan import measured
 from ..settings import whitelist
 
 log = logging.getLogger(__name__)

@@ -3,7 +3,7 @@ import os, logging
 from telethon import events
 
 from ..settings import admin
-from ..utils.measure import measured
+from ..utils.jordan import measured
 
 log = logging.getLogger(__name__)
 reply = f'pong from {os.getenv("JANI_HOST", "?")}'

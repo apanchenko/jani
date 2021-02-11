@@ -1,7 +1,7 @@
 import logging
 from telethon import events
 
-from ..utils.measure import measured
+from ..utils.jordan import measured
 
 
 log = logging.getLogger(__name__)

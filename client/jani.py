@@ -12,7 +12,7 @@ from .filters.spam import handle_spam
 from .filters.joined import filter_joined
 from .message.private import handle_private_message
 from .utils.env import load_env_file
-from .utils import measure
+from .utils import jordan
 
 
 def run():
@@ -40,7 +40,7 @@ def run():
             integrations = [sentry_logging]
         )
 
-    measure.init(
+    jordan.init(
         url = os.getenv("INFLUXDB_V2_URL"),
         org = os.getenv("INFLUXDB_V2_ORG"),
         token = os.getenv("INFLUXDB_V2_TOKEN"),
