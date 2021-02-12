@@ -42,7 +42,7 @@ def run():
 
     jordan.init(
         url = os.getenv("INFLUXDB_V2_URL"),
-        org = os.getenv("INFLUXDB_V2_ORG"),
+        organ = os.getenv("INFLUXDB_V2_ORG"),
         token = os.getenv("INFLUXDB_V2_TOKEN"),
         bucket = os.getenv("INFLUXDB_BUCKET")
     )
