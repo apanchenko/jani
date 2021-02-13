@@ -10,7 +10,6 @@ Usage:
     def do_something()
         ...
 
-TODO: optionally set label for any measured
 TODO: tests
 TODO: separate library
 TODO: optionally report every period to support staked presentation
@@ -18,9 +17,9 @@ TODO: write pending output on shutdown
 """
 
 import time, logging
-from typing import Any, List
+from typing import Any, List, Callable, TypeVar, cast
 from functools import wraps
-#from datetime import datetime as dt
+from datetime import datetime as dt
 
 from influxdb_client import InfluxDBClient, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
@@ -32,6 +31,8 @@ _batch :    int
 _influx:    Any
 _log   :    logging.Logger
 _out   :    List[str]
+
+F = TypeVar("F", bound=Callable[..., Any]) 
 
 def init(url: str,
          organ: str,
@@ -62,25 +63,28 @@ def init(url: str,
     _log    = logging.getLogger('⏱️')
     _log.info(f'Report measured calls every ' + ('minute' if delay == 1 else f'{delay} minutes'))
 
-
 class measured:
     """
     Measure async function calls
     """
-    label: str
     count: int = 0
     spent: float = 0
     period: int = 0
 
-    def __call__(self, fn):
-        self.label = fn.__name__
+    def __init__(self, label:str = None) -> None:
+        self.label = label
+
+    def __call__(self, fn: F) -> F:
+        if self.label is None:
+            self.label = fn.__name__
+
         @wraps(fn)
         async def wrapper(*args, **kwds):
             start = time.time()
             result = await fn(*args, **kwds)
             self._report(start)
             return result
-        return wrapper
+        return cast(F, wrapper)
 
     def _report(self, start: float) -> None:
         finish = time.time()
@@ -105,17 +109,17 @@ class measured:
                 _out.append(self._empty(period - 1))
 
             if len(_out) >= _batch:
-                _log.info(f'output size {len(_out)}, write {_out[:_batch]}')
+                #_log.info(f'output size {len(_out)}, write {_out[:_batch]}')
                 _influx.write(bucket=_bucket, record=_out[:_batch], write_precision=WritePrecision.S)
                 _out = _out[_batch:]
-                _log.info(f'{len(_out)} records went to next batch')
+                #_log.info(f'{len(_out)} records went to next batch')
 
             self.period = period
 
         # save this call
         self.count += 1
         self.spent += finish - start
-        #_log.info(f'{dt.fromtimestamp(period * _delays):%H:%M} {m.label} {format(finish - start, _format)}')
+        #_log.info(f'{dt.fromtimestamp(period * _delays):%H:%M} {self.label} {format(finish - start, _format)}')
 
     def _empty(self, period: int) -> str:
         return f'{self.label} tps=0,latency=0 {period * _delays}'
