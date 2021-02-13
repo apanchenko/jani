@@ -9,7 +9,7 @@ from ..settings import whitelist
 
 log = logging.getLogger(__name__)
 
-@measured()
+@measured
 @events.register(events.ChatAction(func=lambda e: e.user_joined))
 async def filter_joined(event):
     desc = await get_from(event)

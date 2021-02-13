@@ -6,7 +6,7 @@ from ..settings import admin
 
 log = logging.getLogger(__name__)
 
-@measured()
+@measured
 @events.register(events.NewMessage(outgoing=False))
 async def handle_private_message(msg) -> None:
     """

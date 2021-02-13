@@ -10,9 +10,13 @@ Usage:
     def do_something()
         ...
 
+    @measured(label='tick')
+    def do_something_else_with_long_name()
+        ...
+
+TODO: optionally report every period to support staked presentation
 TODO: tests
 TODO: separate library
-TODO: optionally report every period to support staked presentation
 TODO: write pending output on shutdown
 """
 
@@ -63,7 +67,14 @@ def init(url: str,
     _log    = logging.getLogger('⏱️')
     _log.info(f'Report measured calls every ' + ('minute' if delay == 1 else f'{delay} minutes'))
 
-class measured:
+
+def measured(_fn: F = None, /, *, label: str = None) -> F:
+    if _fn is not None:
+        decorator = _Decorator(_fn.__name__)
+        return decorator(_fn)
+    return _Decorator(label=label)
+
+class _Decorator:
     """
     Measure async function calls
     """
@@ -71,13 +82,10 @@ class measured:
     spent: float = 0
     period: int = 0
 
-    def __init__(self, label:str = None) -> None:
+    def __init__(self, label) -> None:
         self.label = label
 
     def __call__(self, fn: F) -> F:
-        if self.label is None:
-            self.label = fn.__name__
-
         @wraps(fn)
         async def wrapper(*args, **kwds):
             start = time.time()
@@ -119,7 +127,7 @@ class measured:
         # save this call
         self.count += 1
         self.spent += finish - start
-        #_log.info(f'{dt.fromtimestamp(period * _delays):%H:%M} {self.label} {format(finish - start, _format)}')
+        _log.info(f'{dt.fromtimestamp(period * _delays):%H:%M} {self.label} {format(finish - start, _format)}')
 
     def _empty(self, period: int) -> str:
         return f'{self.label} tps=0,latency=0 {period * _delays}'

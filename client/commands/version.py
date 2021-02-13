@@ -8,7 +8,7 @@ git_commit = os.getenv('GIT_COMMIT', 'unspecified')
 __version__ = os.getenv('JANI_VERSION', 'unspecified')
 reply = f'{__version__} commit: {git_commit}'
 
-@measured()
+@measured(label = 'myversion')
 @events.register(events.NewMessage(pattern='/version'))
 async def handle_version(event):
     """
