@@ -12,7 +12,7 @@ from ..utils.jordan import measured
 
 log = logging.getLogger(__name__)
 
-@measured
+@measured()
 @events.register(events.NewMessage())
 async def handle_spam(event):
 
