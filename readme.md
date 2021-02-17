@@ -36,5 +36,5 @@ python main.py
 ```bash
 docker tag jani registry.digitalocean.com/apanchenko/jani
 docker push registry.digitalocean.com/apanchenko/jani
-docker pull registry.digitalocean.com/apanchenko/jani
+docker pull registry.digitalocean.com/apanchenko/jani:0.1.4
 ```

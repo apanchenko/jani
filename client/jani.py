@@ -41,10 +41,10 @@ def run():
         )
 
     jordan.init(
-        url = os.getenv("INFLUXDB_V2_URL"),
-        organ = os.getenv("INFLUXDB_V2_ORG"),
-        token = os.getenv("INFLUXDB_V2_TOKEN"),
-        bucket = os.getenv("INFLUXDB_BUCKET")
+        url = os.getenv("JORDAN_INFLUXDB_URL"),
+        organ = os.getenv("JORDAN_INFLUXDB_ORG"),
+        token = os.getenv("JORDAN_INFLUXDB_TOKEN"),
+        bucket = os.getenv("JORDAN_INFLUXDB_BUCKET")
     )
 
     # create telegram client

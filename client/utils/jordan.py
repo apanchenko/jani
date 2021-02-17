@@ -33,7 +33,7 @@ def init(url: str,
          *,
          delay = 1,
          latency_accuracy = 6,
-         batch_size = 10) -> None:
+         batch_size = 100) -> None:
     """ Initialize before any measured function called
     url              : InfluxDB server API url
     organ            : InfluxDb organization
@@ -74,7 +74,7 @@ class measured:
     spent: float = 0    # seconds spent in call
     period: int = 0     # for sparse measurements 
 
-    def __init__(self, label:str=None, dense:bool=True) -> None:
+    def __init__(self, label:str=None, dense:bool=False) -> None:
         self._label = label
         self._dense = dense
         if dense:
@@ -131,7 +131,7 @@ class measured:
         # save this call
         self.count += 1
         self.spent += finish - start
-        _log.info(f'report {self.label} {format(finish - start, _format)} at {dt.fromtimestamp(period * _delays):%H:%M}')
+        #_log.info(f'report {self.label} {format(finish - start, _format)} at {dt.fromtimestamp(period * _delays):%H:%M}')
 
     def _report_dense(self, start: float) -> None:
         finish = time.time()
@@ -140,21 +140,21 @@ class measured:
         global _out, _period, _decors
         if period > _period:
             while period > _period:
-                _log.info(f'work on {len(_decors)=}, {_period=}')
+                #_log.info(f'work on {len(_decors)=}, {_period=}')
                 sec = _period * _delays
                 for d in _decors:
                     _out.append(d._empty(sec) if d.count==0 else d._linear(sec))
                 _period += 1
 
             if len(_out) >= _batch:
-                _log.info(f'output size {len(_out)}, write {_out}')
+                #_log.info(f'output size {len(_out)}, write {_out}')
                 _influx.write(bucket=_bucket, record=_out, write_precision=WritePrecision.S)
                 _out.clear()
 
         # save this call
         self.count += 1
         self.spent += finish - start
-        _log.info(f'report {self._label} {format(finish - start, _format)} at {dt.fromtimestamp(period * _delays):%H:%M}')
+        #_log.info(f'report {self._label} {format(finish - start, _format)} at {dt.fromtimestamp(period * _delays):%H:%M}')
 
     def _empty(self, ts: int) -> str:
         return f'{self._label} tps=0,latency=0 {ts}'
