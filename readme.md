@@ -17,6 +17,7 @@ git push --tags
 ```bash
 docker build --build-arg GIT_COMMIT=$(git rev-parse --short HEAD) -t registry.digitalocean.com/apanchenko/jani:0.1 .
 docker run -d --rm --name jani --env-file ~/.jani --cap-drop ALL jani
+docker run -d --env-file ~/.jani registry.digitalocean.com/apanchenko/jani:0.1.5
 docker logs jani --follow
 docker stop jani
 ```
