@@ -3,20 +3,19 @@ Performance measurement
     - measures function calls: TPS and Latency
     - reports to InfluxDB
 
-Usage:
-    measure.init(...)
+Example
+    .. code-block:: python
+        measure.init(...)
 
-    @measured(...)
-    def do_something()
-        ...
+        @measured(...)
+        def do_something()
 
-TODO: write pending output on shutdown
-TODO: raise when called before initialized
 TODO: tests
+TODO: turn async
 TODO: separate library
 """
 
-import time, logging
+import time, logging, signal, asyncio
 from typing import Any, List, Callable, TypeVar, cast
 from functools import wraps
 from datetime import datetime as dt
@@ -31,10 +30,11 @@ def init(url: str,
          token: str,
          bucket: str,
          *,
-         delay_s = 60,
-         latency_accuracy = 6,
-         batch_size = 100,
-         max_batch_s = 3600) -> None:
+         loop: asyncio.AbstractEventLoop = None,
+         delay_s: int = 60,
+         latency_accuracy: int = 6,
+         batch_size: int = 100,
+         max_batch_s: int = 3600) -> None:
     """ Initialize before any measured function called
     url              : InfluxDb server API url
     organ            : InfluxDb organization
@@ -63,6 +63,22 @@ def init(url: str,
     _period = int(now / _delays)
     _batch_end = now + _batchs
     _out    = []
+
+    # write pending output on shutdown
+    if loop is None:
+        loop = asyncio.get_event_loop()
+
+    def wrap_handler(handler):
+        def shutdown():
+            if len(_out) > 0:
+                _influx.write(bucket=_bucket, record=_out, write_precision=WritePrecision.S)
+                _out.clear()
+            handler()
+        return shutdown
+
+    for sig in (signal.SIGINT, signal.SIGTERM):
+        handler = signal.getsignal(sig)
+        loop.add_signal_handler(sig, wrap_handler(handler))
 
 
 _bucket     : str
@@ -149,7 +165,7 @@ class measured:
         # save this call
         self.count += 1
         self.spent += finish - start
-        _log.info(f'report {self._label} {format(finish - start, _format)} at {dt.fromtimestamp(period * _delays):%H:%M}')
+        #_log.info(f'report {self._label} {format(finish - start, _format)} at {dt.fromtimestamp(period * _delays):%H:%M}')
 
 
     def _report_dense(self, start:float, finish:float) -> None:
