@@ -2,27 +2,7 @@
 
 Jani is a janitor bot for telegram
 
-## Flow
-
-```bash
-git checkout master
-git merge dev
-git tag -a 0.1.12
-git push --tags
-./build.sh
-```
-
-## Run bot in docker
-
-```bash
-docker build --build-arg GIT_COMMIT=$(git rev-parse --short HEAD) -t registry.digitalocean.com/apanchenko/jani:0.1 .
-docker run -d --rm --name jani --env-file ~/.jani --cap-drop ALL jani
-docker run -d --env-file ~/.jani registry.digitalocean.com/apanchenko/jani:0.1.5
-docker logs jani --follow
-docker stop jani
-```
-
-## Run without docker
+## run in venv
 
 ```bash
 python3 -m venv .venv
@@ -32,10 +12,26 @@ pip install -r requirements.pip
 python main.py
 ```
 
-## [Push to DOCR](https://www.digitalocean.com/docs/container-registry/quickstart/)
+## run in docker
 
 ```bash
-docker tag jani registry.digitalocean.com/apanchenko/jani
-docker push registry.digitalocean.com/apanchenko/jani
-docker pull registry.digitalocean.com/apanchenko/jani:0.1.4
+docker build --build-arg GIT_COMMIT=$(git rev-parse --short HEAD) -t jani_dev .
+docker run -d --env-file ~/.jani jani_dev
+```
+
+## build and push
+
+```bash
+git checkout master
+git merge feature
+git tag -a 0.x.y
+git push --tags
+./build.sh
+```
+
+## deploy
+
+```bash
+docker pull registry.digitalocean.com/apanchenko/jani:0.x.y
+docker run -d --env-file ~/.jani registry.digitalocean.com/apanchenko/jani:0.x.y
 ```
