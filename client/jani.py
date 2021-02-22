@@ -1,7 +1,7 @@
 import os
 import logging
 
-import sentry_sdk
+import sentry_sdk, peano
 from sentry_sdk.integrations.logging import LoggingIntegration
 from telethon import TelegramClient
 
@@ -12,7 +12,6 @@ from .filters.spam import handle_spam
 from .filters.joined import filter_joined
 from .message.private import handle_private_message
 from .utils.env import load_env_file
-from .utils import jordan
 
 
 def run():
@@ -40,7 +39,7 @@ def run():
             integrations = [sentry_logging]
         )
 
-    jordan.init(
+    peano.init(
         url = os.getenv("JORDAN_INFLUXDB_URL"),
         organ = os.getenv("JORDAN_INFLUXDB_ORG"),
         token = os.getenv("JORDAN_INFLUXDB_TOKEN"),

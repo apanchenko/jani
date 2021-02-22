@@ -1,7 +1,7 @@
 import os, logging
 from telethon import events
 
-from ..utils.jordan import measured
+from peano import measured
 
 log = logging.getLogger(__name__)
 git_commit = os.getenv('GIT_COMMIT', 'unspecified')

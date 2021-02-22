@@ -1,7 +1,7 @@
 import logging
 from telethon import events
 
-from ..utils.jordan import measured
+from peano import measured
 
 
 log = logging.getLogger(__name__)
