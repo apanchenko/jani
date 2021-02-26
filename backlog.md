@@ -17,6 +17,7 @@
 
 ## Done
 
+- performance monitoring separated in peano lib
 - filter documents in private messages
 - forward private messages between user and admin
 - add /help command
