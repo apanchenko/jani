@@ -10,7 +10,6 @@ RUN pip install -U pip \
    && pip install --no-cache-dir -r requirements.pip
 
 # copy jani sources
-COPY main.py .
 COPY ./client ./client
 
 # set version
@@ -21,4 +20,4 @@ ENV JANI_VERSION=$JANI_VERSION
 ARG GIT_COMMIT
 ENV GIT_COMMIT=$GIT_COMMIT
 
-CMD [ "python", "main.py" ]
+CMD [ "python", "-m", "client" ]

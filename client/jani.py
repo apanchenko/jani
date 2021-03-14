@@ -5,20 +5,18 @@ import sentry_sdk, peano
 from sentry_sdk.integrations.logging import LoggingIntegration
 from telethon import TelegramClient
 
-from .commands.ping import handle_ping
-from .commands.version import handle_version
-from .commands.help import handle_help
-from .filters.spam import handle_spam
-from .filters.joined import filter_joined
-from .message.private import handle_private_message
-from .utils.env import load_env_file
+from .service.commands.ping import handle_ping
+from .service.commands.version import handle_version
+from .service.commands.help import handle_help
+from .service.filters.spam import handle_spam
+from .service.filters.joined import filter_joined
+from .service.message.private import handle_private_message
+from .util.env import load_env_file
+
 
 
 def run():
     # configure logs
-    logging.basicConfig(
-        format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-        level=logging.INFO)
     log = logging.getLogger(__name__)
 
     # optionally load secrets from file
@@ -53,7 +51,7 @@ def run():
         api_hash  = os.environ['API_HASH']).start(
         bot_token = os.environ['BOT_TOKEN']) as client:
 
-        #loop.create_task(show_channels(client, log))
+        #client.loop.create_task(catchup(client))
 
         client.add_event_handler(handle_ping)
         client.add_event_handler(handle_version)
@@ -61,4 +59,5 @@ def run():
         client.add_event_handler(handle_spam)
         client.add_event_handler(filter_joined)
         client.add_event_handler(handle_private_message)
+
         client.run_until_disconnected()

@@ -6,18 +6,22 @@ Jani is a janitor bot for telegram
 
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate
+. .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.pip
-python main.py
+python -m client
 ```
 
 ## run in docker
 
 ```bash
-docker build --build-arg GIT_COMMIT=$(git rev-parse --short HEAD) -t jani_dev .
+docker build -t jani_dev .
 docker run -d --env-file ~/.jani jani_dev
 ```
+
+## run in compose
+
+docker-compose up
 
 ## build and push
 

@@ -2,12 +2,12 @@ import logging
 from telethon import events
 
 from peano import measured
-from ..settings import admin
+from ...settings import admin
 
 log = logging.getLogger(__name__)
 
-@measured()
 @events.register(events.NewMessage(outgoing=False))
+@measured()
 async def handle_private_message(msg) -> None:
     """
     Forward private messages to admin

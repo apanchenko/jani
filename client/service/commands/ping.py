@@ -2,14 +2,14 @@ import os, logging
 
 from telethon import events
 
-from ..settings import admin
+from ...settings import admin
 from peano import measured
 
 log = logging.getLogger(__name__)
 reply = f'pong from {os.getenv("JANI_HOST", "?")}'
 
-@measured()
 @events.register(events.NewMessage(pattern='/ping'))
+@measured()
 async def handle_ping(message) -> None:
     """
     Handle private command /ping

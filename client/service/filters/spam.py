@@ -6,18 +6,21 @@ import logging
 from telethon import events, errors
 from telethon.events import StopPropagation
 
-from ..channels import get_from
-from ..settings import whitelist
+from ...util.channels import get_from
+from ...settings import whitelist
 from peano import measured
+from ..channel_offset import set_offset
 
 log = logging.getLogger(__name__)
 
-@measured()
 @events.register(events.NewMessage())
+@measured()
 async def handle_spam(event):
 
     if not event.is_channel:
         return
+
+    #set_offset(event.chat_id, event.id)
 
     sender = event.sender_id
     try:

@@ -3,14 +3,14 @@ import logging
 from telethon import events, errors
 from telethon.tl.types import MessageActionChatJoinedByLink
 
-from ..channels import get_from
+from ...util.channels import get_from
 from peano import measured
-from ..settings import whitelist
+from ..channel_offset import set_offset
 
 log = logging.getLogger(__name__)
 
-@measured()
 @events.register(events.ChatAction(func=lambda e: e.user_joined))
+@measured()
 async def filter_joined(event):
     desc = await get_from(event)
 
@@ -18,6 +18,8 @@ async def filter_joined(event):
     if action_message is None:
         log.info(f'{desc} action_message is None: {event}')
         return
+
+    #set_offset(event.chat_id, action_message.id)
 
     # cannot delete due to MessageDeleteForbiddenError
     # ChatAction.Event(                  action_message=MessageService(id=x, to_id=PeerChannel(channel_id=x), date=datetime.datetime(x), action=MessageActionChatJoinedByLink(inviter_id=x), out=False, mentioned=False, media_unread=False, silent=False, post=False, legacy=False, from_id=x, reply_to_msg_id=None),

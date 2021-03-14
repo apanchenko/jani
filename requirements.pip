@@ -1,3 +1,5 @@
 telethon==1.18.2
 sentry-sdk==0.19.3
 peano==0.1.2
+pymongo==3.11.3
+dependency-injector==4.27.0

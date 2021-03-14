@@ -1,6 +1,29 @@
-version: "3.9"
+version: "3"
+
 services:
   bot:
-    image: registry.digitalocean.com/apanchenko/jani:0.1.0
+    #image: registry.digitalocean.com/apanchenko/jani:0.1.6
+    image: jani_dev
+    depends_on:
+      - mongo
     env_file:
-      - .env
+      - .jani
+    networks: 
+     - botnet
+    
+  mongo:
+    image: mongo:4.4-bionic
+    ports:
+      - 27017:27017
+    networks: 
+      - botnet
+    volumes: 
+      - mongo-data:/data/db
+
+networks: 
+  botnet:
+    driver: bridge
+
+volumes: 
+  mongo-data:
+    driver: local

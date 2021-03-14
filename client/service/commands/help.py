@@ -17,8 +17,8 @@ Follow these steps:
 /help - show this message
 '''
 
-@measured()
 @events.register(events.NewMessage(pattern='/help'))
+@measured()
 async def handle_help(message):
     """
     Handle private command /help
