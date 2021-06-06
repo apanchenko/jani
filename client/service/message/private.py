@@ -4,7 +4,7 @@ from telethon import events
 from peano import measured
 from ...settings import admin
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('private')
 
 @events.register(events.NewMessage(outgoing=False))
 @measured()

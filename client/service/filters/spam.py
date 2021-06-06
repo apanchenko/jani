@@ -9,9 +9,8 @@ from telethon.events import StopPropagation
 from ...util.channels import get_from
 from ...settings import whitelist
 from peano import measured
-from ..channel_offset import set_offset
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('spam')
 
 @events.register(events.NewMessage())
 @measured()

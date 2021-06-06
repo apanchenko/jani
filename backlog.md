@@ -2,23 +2,31 @@
 
 ## Todo
 
-- black and white spam words lists
-- categorize message theme to block deprecated themes
+- save processed message offsets to not skip messages during restart
+  - iter_messages not available to bot. Login as user? [lonami](https://t.me/TelethonChat/312114)
+  - update telethon, research its catch_up
+  - research using TDLib
+
+- filter spam
+  - categorize message theme to block deprecated themes
+  - delete repeats
+  - black words lists
+
 - welcome messages
+
 - statistics
+
 - configure custom bots selecting features
   - update channel admins
+
 - vote for new features
   - payments
+
 - debt
   - refactor using injector
   - builder image to decrease image size
   - tests
   - github action to deploy to DO
-- save processed message offsets to not skip messages during restart
-  - iter_messages not available to bot. Login as user? [lonami](https://t.me/TelethonChat/312114)
-  - update telethon, research its catch_up
-  - research using TDLib
 
 ## Done
 

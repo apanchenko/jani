@@ -5,9 +5,8 @@ from telethon.tl.types import MessageActionChatJoinedByLink
 
 from ...util.channels import get_from
 from peano import measured
-from ..channel_offset import set_offset
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('joined')
 
 @events.register(events.ChatAction(func=lambda e: e.user_joined))
 @measured()

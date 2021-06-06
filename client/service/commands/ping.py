@@ -5,7 +5,7 @@ from telethon import events
 from ...settings import admin
 from peano import measured
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('ping')
 reply = f'pong from {os.getenv("JANI_HOST", "?")}'
 
 @events.register(events.NewMessage(pattern='/ping'))

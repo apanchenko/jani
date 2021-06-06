@@ -7,11 +7,11 @@ async def get_from(event) -> str:
     """
     chat = await event.get_chat()
 
-    name = ''
-    if isinstance(chat, (Chat, Channel)):
-        name = chat.title
+    # name = ''
+    # if isinstance(chat, (Chat, Channel)):
+    #     name = chat.title
 
-    elif isinstance(chat, User):
-        name = chat.username
+    # elif isinstance(chat, User):
+    #     name = chat.username
 
-    return f"📣{type(chat).__name__}🆔{event.chat_id} '{name}'"
+    return f"📣{type(chat).__name__} 🆔{event.chat_id}"

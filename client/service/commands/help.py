@@ -1,5 +1,6 @@
 import logging
 from telethon import events
+from telethon.errors.rpcerrorlist import UserIsBlockedError
 
 from peano import measured
 
@@ -26,5 +27,9 @@ async def handle_help(message):
     if not message.is_private:
         return
 
-    await message.respond(reply)
+    try:
+        await message.respond(reply)
+    except UserIsBlockedError:
+        pass
+
     raise events.StopPropagation
