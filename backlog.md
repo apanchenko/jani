@@ -2,6 +2,11 @@
 
 ## Todo
 
+- to setup feature per channel:
+  - command to update channel admins
+  - in private /list my channels
+  - in private /select channel (like botfather)
+
 - save processed message offsets to not skip messages during restart
   - iter_messages not available to bot. Login as user? [lonami](https://t.me/TelethonChat/312114)
   - update telethon, research its catch_up
@@ -11,6 +16,7 @@
   - categorize message theme to block deprecated themes
   - delete repeats
   - black words lists
+  - detect language
 
 - welcome messages
 
@@ -23,7 +29,6 @@
   - payments
 
 - debt
-  - refactor using injector
   - builder image to decrease image size
   - tests
   - github action to deploy to DO
