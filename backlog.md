@@ -22,9 +22,6 @@
 
 - statistics
 
-- configure custom bots selecting features
-  - update channel admins
-
 - vote for new features
   - payments
 

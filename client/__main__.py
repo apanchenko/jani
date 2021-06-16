@@ -7,15 +7,14 @@ import sentry_sdk, peano
 from sentry_sdk.integrations.logging import LoggingIntegration
 from telethon import TelegramClient
 import pymongo
-from telethon import events, errors
-from telethon.sessions.memory import MemorySession
 
-from .service.commands.ping import handle_ping
+from .service.commands.help    import handle_help
+from .service.commands.ping    import handle_ping
+from .service.commands.reload  import register_handle_reload
 from .service.commands.version import handle_version
-from .service.commands.help import handle_help
-from .service.filters.spam import handle_spam
-from .service.filters.joined import filter_joined
-from .service.message.private import handle_private_message
+from .service.filters.spam     import handle_spam
+from .service.filters.joined   import filter_joined
+from .service.message.private  import handle_private_message
 from .util.env import load_env_file
 
 
@@ -28,6 +27,7 @@ if __name__ == '__main__':
     log = logging.getLogger()
 
     mongo_client = pymongo.MongoClient('mongo', 27017)
+    db = mongo_client['jani']
 
     # optionally load secrets from file
     if 'API_ID' not in os.environ:
@@ -61,9 +61,10 @@ if __name__ == '__main__':
         api_hash  = os.environ['API_HASH']).start(
         bot_token = os.environ['BOT_TOKEN']) as client:
 
-        client.add_event_handler(handle_ping)
-        client.add_event_handler(handle_version)
         client.add_event_handler(handle_help)
+        client.add_event_handler(handle_ping)
+        register_handle_reload(client, db)
+        client.add_event_handler(handle_version)
         client.add_event_handler(handle_spam)
         client.add_event_handler(filter_joined)
         client.add_event_handler(handle_private_message)
