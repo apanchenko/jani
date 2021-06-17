@@ -21,12 +21,19 @@ def register_handle_reload(client, db:Database) -> None:
 
         log.info(f'/r from 👤{message.sender_id} {message.chat_id=}')
 
+        chat = await message.get_chat()
+
         admins = []
         async for user in client.iter_participants(message.chat_id, filter=ChannelParticipantsAdmins):
             log.info(f'👤{user.id=} {user.is_self=} {user.bot=}')
             admins.append(user.id)
 
-        update_admins(db, message.chat_id, admins)
+        update_admins(
+            db = db,
+            channel_id = message.chat_id,
+            channel_title = chat.title,
+            admins = admins
+        )
             
         await message.respond('Reloaded!')
         raise events.StopPropagation

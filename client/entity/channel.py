@@ -4,31 +4,10 @@ from typing import List
 from pymongo.database import Database
 
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('🧑‍⚖️')
 
 
-def set_offset(channel:int, offset:int, db:Database) -> None:
-    """ Set current message id in channel
-    """
-    result = db.channel_offset.replace_one({"channel": channel}, {
-        'channel': channel,
-        'offset': offset
-    }, upsert=True)
-
-    log.info(f'set_offset {channel=} {offset=} result {result}')
-
-
-def get_offset(channel:int, db:Database) -> int:
-    """ Get current messasge id in channel
-    """
-    entity = db.channel_offset.find_one({
-        "channel": channel
-    })
-    log.info(f'get_channel {channel=} result {entity=}')
-    return entity['offset']
-
-
-def update_admins(db:Database, channel:int, admins:List[int]) -> None:
+def update_admins(db:Database, channel_id:int, channel_title:str, admins:List[int]) -> None:
     '''
     Update list of admin by channel
 
@@ -41,10 +20,18 @@ def update_admins(db:Database, channel:int, admins:List[int]) -> None:
         https://docs.mongodb.com/v4.4/core/transactions/
     '''
     col = db['admin']
+    channel_collection = db['channel']
+
+    # update channel info
+    channel_collection.update_one(
+        {'id':channel_id},
+        {'$set': {'id':channel_id, 'title':channel_title}},
+        upsert = True
+    )
 
     # remove obsolete admins
     result = col.delete_many({
-        'channel': channel,
+        'channel': channel_id,
         'user': {'$nin': admins}
     })
     log.info(f'deleted {result.deleted_count} admins')
@@ -52,7 +39,27 @@ def update_admins(db:Database, channel:int, admins:List[int]) -> None:
     # insert new admins
     modified_count = 0
     for user in admins:
-        doc = {'channel': channel, 'user': user}
+        doc = {'channel': channel_id, 'user': user}
         result = col.update_one(doc, {'$set': doc}, upsert=True)
         modified_count += result.modified_count
     log.info(f'modified {modified_count} admins')
+
+
+def get_channels(db:Database, admin:int) -> List[str]:
+    '''
+    Get list of channels by admin
+    '''
+    col = db['admin']
+    channel_collection = db['channel']
+
+    # get channel ids by admin user
+    channels_ids = []
+    for admin_entity in col.find({'user': admin}, {'_id':0, 'channel':1}):
+        channels_ids.append(admin_entity['channel'])
+
+    # get channel titles
+    titles = []
+    for channel_entity in channel_collection.find({'id':{'$in':channels_ids}}):
+        titles.append(channel_entity['title'])
+
+    return titles

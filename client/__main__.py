@@ -8,14 +8,15 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 from telethon import TelegramClient
 import pymongo
 
-from .service.commands.help    import handle_help
-from .service.commands.ping    import handle_ping
-from .service.commands.reload  import register_handle_reload
-from .service.commands.version import handle_version
-from .service.filters.spam     import handle_spam
-from .service.filters.joined   import filter_joined
-from .service.message.private  import handle_private_message
-from .util.env import load_env_file
+from .service.commands.help         import handle_help
+from .service.commands.ping         import handle_ping
+from .service.commands.reload       import register_handle_reload
+from .service.commands.mychannels   import register_mychannels
+from .service.commands.version      import handle_version
+from .service.filters.spam          import handle_spam
+from .service.filters.joined        import filter_joined
+from .service.message.private       import handle_private_message
+from .util.env                      import load_env_file
 
 
 if __name__ == '__main__':
@@ -64,6 +65,7 @@ if __name__ == '__main__':
         client.add_event_handler(handle_help)
         client.add_event_handler(handle_ping)
         register_handle_reload(client, db)
+        register_mychannels(client, db)
         client.add_event_handler(handle_version)
         client.add_event_handler(handle_spam)
         client.add_event_handler(filter_joined)

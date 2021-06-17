@@ -4,8 +4,7 @@
 
 - to setup feature per channel:
   - command to update channel admins
-  - in private /list my channels
-  - in private /select channel (like botfather)
+  - private /mychannels command to list and select channel
 
 - save processed message offsets to not skip messages during restart
   - iter_messages not available to bot. Login as user? [lonami](https://t.me/TelethonChat/312114)
