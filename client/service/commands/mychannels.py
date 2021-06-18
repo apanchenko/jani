@@ -1,17 +1,14 @@
-import logging
-
 from telethon import events, Button
 from telethon.tl.types import ChannelParticipantsAdmins
-from pymongo.database import Database
 from peano import measured
 
-from client.entity.channel import get_channels
+from client.entity.chat import Chat
+from client.entity.admin import Admin
 
 
-def register_mychannels(client, db:Database) -> None:
-    """ Register /mychannels handler
-    """
-    log = logging.getLogger('/mychannels')
+def register_mychannels(client) -> None:
+    ''' Register /mychannels handler
+    '''
 
     @events.register(events.NewMessage(pattern='/mychannels'))
     @measured()
@@ -21,12 +18,11 @@ def register_mychannels(client, db:Database) -> None:
         if not message.is_private:
             return
 
-        channels = get_channels(db, message.sender_id)
-        log.info(f'👤{message.sender_id}: {channels}')
+        admins = Admin.objects(user=message.sender_id).only('chat')
 
         await message.respond(
             message = 'Choose a channel from the list below:',
-            buttons = [[Button.inline(text=ch) for ch in channels]]
+            buttons = [[Button.inline(text=admin.chat.title) for admin in admins]]
         )
         raise events.StopPropagation
 

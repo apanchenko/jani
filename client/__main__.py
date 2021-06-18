@@ -6,7 +6,7 @@ import logging
 import sentry_sdk, peano
 from sentry_sdk.integrations.logging import LoggingIntegration
 from telethon import TelegramClient
-import pymongo
+import mongoengine
 
 from .service.commands.help         import handle_help
 from .service.commands.ping         import handle_ping
@@ -27,8 +27,7 @@ if __name__ == '__main__':
     )
     log = logging.getLogger()
 
-    mongo_client = pymongo.MongoClient('mongo', 27017)
-    db = mongo_client['jani']
+    mongoengine.connect(host="mongodb://mongo:27017/jani")
 
     # optionally load secrets from file
     if 'API_ID' not in os.environ:
@@ -64,8 +63,8 @@ if __name__ == '__main__':
 
         client.add_event_handler(handle_help)
         client.add_event_handler(handle_ping)
-        register_handle_reload(client, db)
-        register_mychannels(client, db)
+        register_handle_reload(client)
+        register_mychannels(client)
         client.add_event_handler(handle_version)
         client.add_event_handler(handle_spam)
         client.add_event_handler(filter_joined)

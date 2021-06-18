@@ -2,10 +2,6 @@
 
 ## Todo
 
-- to setup feature per channel:
-  - command to update channel admins
-  - private /mychannels command to list and select channel
-
 - save processed message offsets to not skip messages during restart
   - iter_messages not available to bot. Login as user? [lonami](https://t.me/TelethonChat/312114)
   - update telethon, research its catch_up
@@ -31,6 +27,9 @@
 
 ## Done
 
+- to setup feature per channel:
+  - /r to update channel admins
+  - private /mychannels command to list and select channel
 - use compose and mongo
 - performance monitoring separated in peano lib
 - filter documents in private messages

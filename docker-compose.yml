@@ -13,6 +13,7 @@ services:
     
   mongo:
     image: mongo:4.4-bionic
+    container_name: mongo
     ports:
       - 27017:27017
     networks: 

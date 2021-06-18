@@ -2,13 +2,13 @@ import logging
 
 from telethon import events
 from telethon.tl.types import ChannelParticipantsAdmins
-from pymongo.database import Database
 from peano import measured
 
-from client.entity.channel import update_admins
+from client.entity.chat import Chat
+from client.entity.admin import Admin
 
 
-def register_handle_reload(client, db:Database) -> None:
+def register_handle_reload(client) -> None:
     """ Register /r handler
     """
     log = logging.getLogger('reload')
@@ -21,19 +21,22 @@ def register_handle_reload(client, db:Database) -> None:
 
         log.info(f'/r from 👤{message.sender_id} {message.chat_id=}')
 
-        chat = await message.get_chat()
+        tchat = await message.get_chat()
+
+        chat = Chat(id=message.chat_id, title=tchat.title)
+        chat.save()
 
         admins = []
         async for user in client.iter_participants(message.chat_id, filter=ChannelParticipantsAdmins):
             log.info(f'👤{user.id=} {user.is_self=} {user.bot=}')
             admins.append(user.id)
 
-        update_admins(
-            db = db,
-            channel_id = message.chat_id,
-            channel_title = chat.title,
-            admins = admins
-        )
+        # remove obsolete admins
+        Admin.objects(chat=message.chat_id, user__nin=admins).delete()
+        
+        # insert new admins
+        for user in admins:
+            Admin(user=user, chat=chat).save()
             
         await message.respond('Reloaded!')
         raise events.StopPropagation
