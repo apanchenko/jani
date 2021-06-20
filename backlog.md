@@ -16,6 +16,8 @@
 - welcome messages
 
 - statistics
+  - count deleted events in last 24 hours - available in /mychannels
+  - count total deleted events
 
 - vote for new features
   - payments
