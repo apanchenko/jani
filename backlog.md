@@ -2,6 +2,10 @@
 
 ## Todo
 
+- auto update admins /r
+
+- super command /allchats
+
 - save processed message offsets to not skip messages during restart
   - iter_messages not available to bot. Login as user? [lonami](https://t.me/TelethonChat/312114)
   - update telethon, research its catch_up
@@ -31,7 +35,7 @@
 
 - to setup feature per channel:
   - /r to update channel admins
-  - private /mychannels command to list and select channel
+  - private /mychats command to list and select chats
 - use compose and mongo
 - performance monitoring separated in peano lib
 - filter documents in private messages

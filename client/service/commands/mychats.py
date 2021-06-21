@@ -1,19 +1,17 @@
 from telethon import events, Button
-from telethon.tl.types import ChannelParticipantsAdmins
-from peano import measured
 
-from client.entity.chat import Chat
+from peano import measured
 from client.entity.admin import Admin
 
 
-def register_mychannels(client) -> None:
-    ''' Register /mychannels handler
+def register_mychats(client) -> None:
+    ''' Register /mychats handler
     '''
 
-    @events.register(events.NewMessage(pattern='/mychannels'))
+    @events.register(events.NewMessage(pattern='/mychats'))
     @measured()
     async def handler(message) -> None:
-        ''' List channels where sender is admin
+        ''' List chats where sender is admin
         '''
         if not message.is_private:
             return
@@ -21,7 +19,7 @@ def register_mychannels(client) -> None:
         admins = Admin.objects(user=message.sender_id).only('chat')
 
         await message.respond(
-            message = 'Choose a channel from the list below:',
+            message = 'Choose a chat from the list below:',
             buttons = [[Button.inline(text=admin.chat.title) for admin in admins]]
         )
         raise events.StopPropagation

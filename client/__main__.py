@@ -10,8 +10,8 @@ import mongoengine
 
 from .service.commands.help         import handle_help
 from .service.commands.ping         import handle_ping
-from .service.commands.reload       import register_handle_reload
-from .service.commands.mychannels   import register_mychannels
+from .service.commands.reload       import register_reload
+from .service.commands.mychats      import register_mychats
 from .service.commands.version      import handle_version
 from .service.filters.spam          import handle_spam
 from .service.filters.joined        import filter_joined
@@ -63,8 +63,8 @@ if __name__ == '__main__':
 
         client.add_event_handler(handle_help)
         client.add_event_handler(handle_ping)
-        register_handle_reload(client)
-        register_mychannels(client)
+        register_reload(client)
+        register_mychats(client)
         client.add_event_handler(handle_version)
         client.add_event_handler(handle_spam)
         client.add_event_handler(filter_joined)
