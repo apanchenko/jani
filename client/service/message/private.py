@@ -4,50 +4,53 @@ from telethon import events
 from peano import measured
 from ...settings import admin
 
-log = logging.getLogger('private')
 
-@events.register(events.NewMessage(outgoing=False))
-@measured()
-async def handle_private_message(msg) -> None:
+def handle_private_message(client) -> None:
+    """ Forward private messages to admin
     """
-    Forward private messages to admin
-    """
-    if not msg.is_private:
-        return
+    log = logging.getLogger('private')
 
-    # filter out commands
-    if msg.text[:1] == "/":
-        return
+    @events.register(events.NewMessage(outgoing=False))
+    @measured()
+    async def handler(msg) -> None:
+        if not msg.is_private:
+            return
 
-    # allow text only
-    if (msg.gif is not None or
-        msg.file is not None or
-        msg.photo is not None or
-        msg.audio is not None or
-        msg.voice is not None or
-        msg.video is not None or
-        msg.contact is not None or
-        msg.document is not None or
-        'https://' in msg.text or
-        'http://' in msg.text
-    ):
-        await msg.reply('Do not send me this, please.')
-        return
+        # filter out commands
+        if msg.text[:1] == "/":
+            return
 
-    # resend admin's reply to origin message sender
-    if msg.sender_id == admin and msg.is_reply:
-        origin = await msg.get_reply_message()
-        if origin and origin.forward:
-            user_id = origin.forward.sender_id
-            if user_id is None:
-                # reply to admin that original sender is unknown
-                await msg.reply("cannot reply: sender is unknown")
-            else:
-                # send text from admin to original sender
-                log.info(f'reply "{msg.text}" from admin to {user_id}')
-                await msg.client.send_message(user_id, msg.text)
-        return
+        # allow text only
+        if (msg.gif is not None or
+            msg.file is not None or
+            msg.photo is not None or
+            msg.audio is not None or
+            msg.voice is not None or
+            msg.video is not None or
+            msg.contact is not None or
+            msg.document is not None or
+            'https://' in msg.text or
+            'http://' in msg.text
+        ):
+            await msg.reply('Do not send me this, please.')
+            return
 
-    # forward incoming message to admin 
-    log.info(f'forward "{msg.text}" from {msg.sender_id} to admin')
-    await msg.forward_to(admin)
+        # resend admin's reply to origin message sender
+        if msg.sender_id == admin and msg.is_reply:
+            origin = await msg.get_reply_message()
+            if origin and origin.forward:
+                user_id = origin.forward.sender_id
+                if user_id is None:
+                    # reply to admin that original sender is unknown
+                    await msg.reply("cannot reply: sender is unknown")
+                else:
+                    # send text from admin to original sender
+                    log.info(f'reply "{msg.text}" from admin to {user_id}')
+                    await msg.client.send_message(user_id, msg.text)
+            return
+
+        # forward incoming message to admin 
+        log.info(f'forward "{msg.text}" from {msg.sender_id} to admin')
+        await msg.forward_to(admin)
+
+    client.add_event_handler(handler)

@@ -4,7 +4,7 @@ from peano import measured
 from client.entity.admin import Admin
 
 
-def register_mychats(client) -> None:
+def handle_mychats(client) -> None:
     ''' Register /mychats handler
     '''
 

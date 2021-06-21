@@ -8,7 +8,7 @@ from client.entity.chat import Chat
 from client.entity.admin import Admin
 
 
-def register_reload(client) -> None:
+def handle_reload(client) -> None:
     """ Register /r handler
     """
     log = logging.getLogger('reload')

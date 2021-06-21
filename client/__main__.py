@@ -10,10 +10,10 @@ import mongoengine
 
 from .service.commands.help         import handle_help
 from .service.commands.ping         import handle_ping
-from .service.commands.reload       import register_reload
-from .service.commands.mychats      import register_mychats
+from .service.commands.reload       import handle_reload
+from .service.commands.mychats      import handle_mychats
 from .service.commands.version      import handle_version
-from .service.filters.spam          import handle_spam
+from .service.filters.spam          import filter_spam
 from .service.filters.joined        import filter_joined
 from .service.message.private       import handle_private_message
 from .util.env                      import load_env_file
@@ -61,15 +61,14 @@ if __name__ == '__main__':
         api_hash  = os.environ['API_HASH']).start(
         bot_token = os.environ['BOT_TOKEN']) as client:
 
-        client.add_event_handler(handle_help)
-        client.add_event_handler(handle_ping)
-        register_reload(client)
-        register_mychats(client)
-        client.add_event_handler(handle_version)
-        client.add_event_handler(handle_spam)
-        client.add_event_handler(filter_joined)
-        client.add_event_handler(handle_private_message)
+        handle_help(client)
+        handle_ping(client)
+        handle_reload(client)
+        handle_mychats(client)
+        handle_version(client)
+        filter_spam(client)
+        filter_joined(client)
+        handle_private_message(client)
 
         client.loop.create_task(client.catch_up())
-
         client.run_until_disconnected()

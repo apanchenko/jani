@@ -3,23 +3,26 @@ from telethon import events
 
 from peano import measured
 
-log = logging.getLogger(__name__)
-git_commit = os.getenv('GIT_COMMIT', 'unspecified')
-__version__ = os.getenv('JANI_VERSION', 'unspecified')
-reply = f'{__version__} commit: {git_commit}'
 
-@events.register(events.NewMessage(pattern='/version'))
-@measured()
-async def handle_version(event):
-    """
-    Handle private command /version
-    """
-    if not event.is_private:
-        return
+def handle_version(client) -> None:
+    ''' Handle private command /version
+    '''
+    log = logging.getLogger(__name__)
+    git_commit = os.getenv('GIT_COMMIT', 'unspecified')
+    __version__ = os.getenv('JANI_VERSION', 'unspecified')
+    reply = f'{__version__} commit: {git_commit}'
 
-    await event.respond(reply)
+    @events.register(events.NewMessage(pattern='/version'))
+    @measured()
+    async def handler(event):
+        if not event.is_private:
+            return
 
-    sender = await event.get_sender()
-    log.info(f'/version from 👤{sender.id}')
+        await event.respond(reply)
 
-    raise events.StopPropagation
+        sender = await event.get_sender()
+        log.info(f'/version from 👤{sender.id}')
+
+        raise events.StopPropagation
+
+    client.add_event_handler(handler)
