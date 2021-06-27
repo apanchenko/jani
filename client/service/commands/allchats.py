@@ -63,7 +63,7 @@ def handle_allchats(client) -> None:
 
         await event.respond(
             message = '\n'.join(f'{c.title}: {c.deleted_count} deleted' for c in chats),
-            buttons = None if len(buttons)==0 else [buttons]
+            buttons = None if len(buttons)==0 else buttons
         )
 
         raise events.StopPropagation
