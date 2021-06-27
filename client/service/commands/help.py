@@ -8,16 +8,17 @@ def handle_help(client) -> None:
     '''
     Handle private command /help
     '''
-    reply = f'''**Jani Bot** help
-    🧹 Jani will remove messages about user joined chat
-
-    Follow these steps:
-
-    - Add @JaniBot as admin into your chat
-    - Give bot a permission to delete messages. No other permissions required
-
-    /help - show this message
-    '''
+    reply = '\n'.join((
+        '**Jani Bot** help',
+        '🧹 Jani will remove messages about user joined chat',
+        '',
+        'Follow these steps:',
+        '',
+        '- Add @JaniBot as admin into your chat',
+        '- Give bot a permission to delete messages. No other permissions required',
+        '',
+        '/help - show this message'
+    ))
 
     @events.register(events.NewMessage(pattern='/help'))
     @measured()

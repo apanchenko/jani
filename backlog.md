@@ -4,7 +4,9 @@
 
 - auto update admins /r
 
-- super command /allchats
+- numbers by chat:
+  - number of users
+  - number of messages processed in 24h
 
 - save processed message offsets to not skip messages during restart
   - iter_messages not available to bot. Login as user? [lonami](https://t.me/TelethonChat/312114)
@@ -33,6 +35,7 @@
 
 ## Done
 
+- 2021.06.27 super command /allchats
 - to setup feature per channel:
   - /r to update channel admins
   - private /mychats command to list and select chats

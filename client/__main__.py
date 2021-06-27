@@ -8,6 +8,7 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 from telethon import TelegramClient
 import mongoengine
 
+from .service.commands.allchats     import handle_allchats
 from .service.commands.help         import handle_help
 from .service.commands.ping         import handle_ping
 from .service.commands.reload       import handle_reload
@@ -61,6 +62,7 @@ if __name__ == '__main__':
         api_hash  = os.environ['API_HASH']).start(
         bot_token = os.environ['BOT_TOKEN']) as client:
 
+        handle_allchats(client)
         handle_help(client)
         handle_ping(client)
         handle_reload(client)
@@ -68,7 +70,7 @@ if __name__ == '__main__':
         handle_version(client)
         filter_spam(client)
         filter_joined(client)
-        handle_private_message(client)
+        #handle_private_message(client)
 
         client.loop.create_task(client.catch_up())
         client.run_until_disconnected()

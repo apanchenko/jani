@@ -9,9 +9,9 @@ log = logging.getLogger('chat')
 
 class Chat(Document):
     '''
-    telegram chat id: event.chat_id
-    telegram chat title
-    total number of deleted messages
+    :id:            telegram chat id: event.chat_id
+    :title:         telegram chat title
+    :deleted_count: total number of deleted messages
     '''
     id            = IntField(primary_key=True)
     title         = StringField(max_length=255, required=True)
