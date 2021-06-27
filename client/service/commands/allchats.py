@@ -46,7 +46,11 @@ def handle_allchats(client) -> None:
         # clice chats
         chats = Chat.objects[offset:page_size].order_by('deleted_count')
 
-        log.info(f'allchats page: {offset}')
+        log.info(f'allchats page: offset {offset}, count {len(chats)}')
+
+        if len(chats) == 0:
+            await event.respond('no chat found')
+            return
 
         # prev page button
         buttons = []
