@@ -9,7 +9,7 @@ services:
     env_file:
       - .jani
     networks: 
-     - botnet
+      - botnet
     
   mongo:
     image: mongo:4.4-bionic

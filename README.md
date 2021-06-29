@@ -30,5 +30,5 @@ git push --tags
 
 ## deploy
 
-docker pull registry.digitalocean.com/apanchenko/jani:0.x.y
-docker run -d --env-file ~/.jani registry.digitalocean.com/apanchenko/jani:0.x.y
+docker pull registry.digitalocean.com/apanchenko/jani:0.1.7.2
+docker run -d --env-file ~/.jani registry.digitalocean.com/apanchenko/jani:0.1.7.1

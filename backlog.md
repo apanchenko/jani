@@ -2,11 +2,16 @@
 
 ## Todo
 
-- auto update admins /r
+- auto update admins `/r`
+
+- list command service for `/mychats`, `/allchats`, etc.
 
 - numbers by chat:
   - number of users
   - number of messages processed in 24h
+
+- security
+  - [mongo](https://hackernoon.com/securing-mongodb-on-your-server-1fc50bd1267b)
 
 - save processed message offsets to not skip messages during restart
   - iter_messages not available to bot. Login as user? [lonami](https://t.me/TelethonChat/312114)

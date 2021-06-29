@@ -34,7 +34,7 @@ def handle_allchats(client) -> None:
         ''' List all chats starting with offset
         '''
         # get offset from command
-        offset = event.pattern_match[1]
+        offset = int(event.pattern_match[1])
 
         # show chats and buttons
         await render_page(event, offset)
@@ -55,15 +55,17 @@ def handle_allchats(client) -> None:
         # prev page button
         buttons = []
         if offset > 0:
-            buttons.append(
-                Button.inline(text='⬅️ prev', data=command + max(offset - page_size, 0))
-            )
+            buttons.append(Button.inline(
+                text = '⬅️ prev',
+                data = command + str(max(offset - page_size, 0))
+            ))
 
         # next page button
         if Chat.objects.count() > offset + page_size:            
-            buttons.append(
-                Button.inline(text='next ➡️', data=command + (offset + page_size))
-            )
+            buttons.append(Button.inline(
+                text = 'next ➡️',
+                data = command + str(offset + page_size)
+            ))
 
         await event.respond(
             message = '\n'.join(f'{c.title}: {c.deleted_count} deleted' for c in chats),
