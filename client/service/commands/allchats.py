@@ -1,79 +1,73 @@
 import re
 import logging
-from telethon import events, Button
+from typing import List, Tuple
 
+from telethon import events
 from peano import measured
+
 from client.entity.chat import Chat
+from ..selector import Page, create_selector
 from ...settings import admin
+
+
+class AllChatsPage(Page):
+    @property
+    def command(self) -> str:
+        '''
+        '''
+        return '/allchats'
+
+    def filter(self, event) -> bool:
+        '''
+        '''
+        # only accept from private admin 
+        return event.sender_id == admin
+
+    @property
+    def size(self) -> int:
+        ''' Number of objects to show on page
+        '''
+        return 10
+    
+    @property
+    def row(self) -> int:
+        ''' Number of objects in a row
+        '''
+        return 1
+
+    def get_page(self, user:int, offset:int) -> List[Tuple[str, str]]:
+        ''' Get objects on page
+        '''
+        chats = Chat.objects[offset:offset + self.size].order_by('-deleted_count')
+        return [(c.title, f'{self.command}{c.id}') for c in chats]
+
+    def get_count(self, user:int) -> int:
+        ''' Get total object count 
+        '''
+        return Chat.objects.count()
+
 
 
 def handle_allchats(client) -> None:
     ''' Register /allchats handlers
     '''
-    command = 'allchats'
-    log = logging.getLogger(command)
-    page_size = 10
+    page = AllChatsPage()
+    create_selector(client, page)
+    log = logging.getLogger(page.command)
 
 
-    @events.register(events.NewMessage(pattern='/allchats'))
+    @events.register(events.CallbackQuery(data=re.compile(f'{page.command}(-?\d+)')))
     @measured()
-    async def on_allchats(event) -> None:
-        ''' List all chats first page
+    async def on_allchats_id(event):
+        ''' Render page by offset
         '''
-        # only accept from private admin 
-        if not event.is_private or event.sender_id != admin:
-            return
+        # get chat id
+        chat_id = int(event.pattern_match[1])
+        log.info(f'on_allchats_id {chat_id}')
 
-        # show first page chats
-        await render_page(event, 0)
+        chat = Chat.objects.get(id = chat_id)
 
-
-    @events.register(events.CallbackQuery(data=re.compile(f'{command}(\d+)')))
-    @measured()
-    async def on_page(event):
-        ''' List all chats starting with offset
-        '''
-        # get offset from command
-        offset = int(event.pattern_match[1])
-
-        # show chats and buttons
-        await render_page(event, offset)
-
-
-    async def render_page(event, offset) -> None:
-        ''' Show page of chats and prev/next buttons
-        '''
-        # clice chats
-        chats = Chat.objects[offset:page_size].order_by('deleted_count')
-
-        log.info(f'allchats page: offset {offset}, count {len(chats)}')
-
-        if len(chats) == 0:
-            await event.respond('no chat found')
-            return
-
-        # prev page button
-        buttons = []
-        if offset > 0:
-            buttons.append(Button.inline(
-                text = '⬅️ prev',
-                data = command + str(max(offset - page_size, 0))
-            ))
-
-        # next page button
-        if Chat.objects.count() > offset + page_size:            
-            buttons.append(Button.inline(
-                text = 'next ➡️',
-                data = command + str(offset + page_size)
-            ))
-
-        await event.respond(
-            message = '\n'.join(f'{c.title}: {c.deleted_count} deleted' for c in chats),
-            buttons = None if len(buttons)==0 else buttons
-        )
-
+        await event.respond(f'{chat.title}: deleted {chat.deleted_count}')
         raise events.StopPropagation
 
-
-    client.add_event_handler(on_allchats)
-    client.add_event_handler(on_page)
+    client.add_event_handler(on_allchats_id)

@@ -4,8 +4,6 @@
 
 - auto update admins `/r`
 
-- list command service for `/mychats`, `/allchats`, etc.
-
 - numbers by chat:
   - number of users
   - number of messages processed in 24h
@@ -40,7 +38,8 @@
 
 ## Done
 
-- 2021.06.27 super command /allchats
+- **2021-07-04** selector command service for `/mychats`, `/allchats`
+- **2021-06-27** super command /allchats
 - to setup feature per channel:
   - /r to update channel admins
   - private /mychats command to list and select chats
