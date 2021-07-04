@@ -2,7 +2,7 @@ import re
 import logging
 from typing import List, Tuple
 
-from telethon import events, Button
+from telethon import events
 from peano import measured
 
 from client.entity.admin import Admin

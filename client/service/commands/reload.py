@@ -3,6 +3,7 @@ import logging
 from telethon import events
 from telethon.tl.types import ChannelParticipantsAdmins
 from peano import measured
+from mongoengine import DoesNotExist
 
 from client.entity.chat import Chat
 from client.entity.admin import Admin
@@ -23,9 +24,14 @@ def handle_reload(client) -> None:
 
         tchat = await message.get_chat()
 
-        chat = Chat(id=message.chat_id, title=tchat.title)
+        # get or create chat entity
+        try:
+            chat = Chat.objects.get(id=message.chat_id)
+        except DoesNotExist:
+            chat = Chat(id=message.chat_id, title=tchat.title)
         chat.save()
 
+        # list admins
         admins = []
         async for user in client.iter_participants(message.chat_id, filter=ChannelParticipantsAdmins):
             log.info(f'👤{user.id=} {user.is_self=} {user.bot=}')
